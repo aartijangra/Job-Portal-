@@ -3,25 +3,17 @@ import {useState, useEffect} from 'react';
 import JobListing from './JobListing';
 import Spinner from './Spinner';
 
-
-
 const JobListings = ({isHome = false}) => {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect( () => {
         const fetchJobs = async () => {
-          const apiUrl = isHome ? '/api/jobs?_limit=3' : '/api/jobs';
-          try{
-            const res = await fetch(apiUrl);
+            const res = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs');
             const data = await res.json();
-            setJobs(data);
-          }
-          catch(error){
-            console.log('Error fetching data',error);
-          } finally {
+            
+            setJobs(isHome ? data.slice(0,3) : data);
             setLoading(false);
-          }
         };
         fetchJobs();
     },[]);
@@ -36,7 +28,7 @@ const JobListings = ({isHome = false}) => {
         {loading ? (<Spinner loading={loading}/>) : (
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {jobs.map((job) => (
-            <JobListing key={job.id} job={job}/>
+            <JobListing key={job._id} job={job}/>
         ))}
           </div>
         )}

@@ -8,9 +8,11 @@ import MainLayout from './Layouts/MainLayout';
 import HomePage from './Pages/HomePage';
 import JobsPage from './Pages/JobsPage';
 import NotFoundPage from './Pages/NotFoundPage';
-import JobPage, { jobLoader } from './Pages/JobPage';
+import JobPage from './Pages/JobPage';
 import AddJobPage from './Pages/AddJobPage';
 import EditJobPage from './Pages/EditJobPage';
+import { toast } from 'react-toastify';
+
 
 const App = () => {
   // Add New Job
@@ -25,25 +27,8 @@ const App = () => {
     return;
   };
 
-  // Delete Job
-  const deleteJob = async (id) => {
-    const res = await fetch(`/api/jobs/${id}`, {
-      method: 'DELETE',
-    });
-    return;
-  };
 
-  // Update Job
-  const updateJob = async (job) => {
-    const res = await fetch(`/api/jobs/${job.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(job),
-    });
-    return;
-  };
+   
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -53,13 +38,11 @@ const App = () => {
         <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob} />} />
         <Route
           path='/edit-job/:id'
-          element={<EditJobPage updateJobSubmit={updateJob} />}
-          loader={jobLoader}
+          element={<EditJobPage  />}
         />
         <Route
           path='/jobs/:id'
-          element={<JobPage deleteJob={deleteJob} />}
-          loader={jobLoader}
+          element={<JobPage/>}
         />
         <Route path='*' element={<NotFoundPage />} />
       </Route>

@@ -9,6 +9,7 @@ const app = express();
 
 // Body parser middleware
 app.use(bodyParser.json());
+app.use(express.urlencoded({extended:true}))
 app.use(cors(
     {
         origin: "*"

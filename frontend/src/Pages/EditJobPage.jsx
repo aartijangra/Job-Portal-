@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {useParams, useLoaderData, useNavigate} from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const EditJobPage = ({updateJobSubmit}) => {
+const EditJobPage = () => {
     const job = useLoaderData();
     const [title, setTitle] = useState(job.title);
     const [type, setType] = useState(job.type);
@@ -14,6 +14,26 @@ const EditJobPage = ({updateJobSubmit}) => {
     const [companyDescription, setCompanyDescription] = useState(job.company.description);
     const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
     const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
+
+  const updateJob = async (id) => {
+    console.log(id)
+    try {
+      const confirmUpdate = window.confirm('Are you sure you want to update this job?');
+      if (!confirmUpdate) return;
+
+      const response = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs/' + id, { method: 'PUT' });
+      if (!response.ok) {
+        throw new Error('Failed to update job');
+      }
+
+      toast.success('Job updated successfully');
+      navigate('/jobs');
+    } catch (error) {
+      console.error('Error updating job:', error);
+      // Handle error, e.g., display an error message
+    }
+    return;
+  };
 
     const navigate = useNavigate();
     const {id} = useParams();
@@ -33,7 +53,7 @@ const EditJobPage = ({updateJobSubmit}) => {
                 contactPhone
             }
         }
-        updateJobSubmit(updatedJob);
+        updateJob(updatedJob);
         toast.success('Job updated successfully');
         return navigate(`/jobs/${id}`);
     };
