@@ -1,28 +1,61 @@
-import React from 'react'
-import {useState} from 'react';
-import {useParams, useLoaderData, useNavigate} from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { useState } from 'react';
+import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
 const EditJobPage = () => {
-    const job = useLoaderData();
-    const [title, setTitle] = useState(job.title);
-    const [type, setType] = useState(job.type);
-    const [location, setLocation] = useState(job.location);
-    const [description, setDescription] = useState(job.description);
-    const [salary, setSalary] = useState(job.salary);
-    const [companyName, setCompanyName] = useState(job.company.name);
-    const [companyDescription, setCompanyDescription] = useState(job.company.description);
-    const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
-    const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
+  const { id } = useParams();
+  console.log(id)
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [salary, setSalary] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [job, setJob] = useState(null)
 
-  const updateJob = async (id) => {
-    console.log(id)
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const res = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs');
+      const data = await res.json();
+
+      const job = data.find(job => job._id === id);
+      setJob(job);
+      console.log(job)
+      setTitle(job.title)
+      setType(job.type)
+      setLocation(job.location)
+      setDescription(job.description)
+      setSalary(job.salary)
+      setCompanyName(job.company.name)
+      setCompanyDescription(job.company.description)
+      setContactEmail(job.company.contactEmail)
+      setContactPhone(job.company.contactPhone)
+
+
+      setLoading(false);
+    };
+    fetchJobs();
+  }, []);
+
+  const updateJob = async (updatedJob) => {
+
     try {
       const confirmUpdate = window.confirm('Are you sure you want to update this job?');
       if (!confirmUpdate) return;
 
-      const response = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs/' + id, { method: 'PUT' });
-      if (!response.ok) {
+      const response = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs/' + job._id, { 
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedJob)
+      });      if (!response.ok) {
         throw new Error('Failed to update job');
       }
 
@@ -35,28 +68,31 @@ const EditJobPage = () => {
     return;
   };
 
-    const navigate = useNavigate();
-    const {id} = useParams();
-    const submitForm = (e) => {
-        e.preventDefault();
-        const updatedJob= {
-            id,
-            title,
-            type,
-            location,
-            description,
-            salary,
-            company: {
-                name: companyName,
-                description: companyDescription,
-                contactEmail,
-                contactPhone
-            }
-        }
-        updateJob(updatedJob);
-        toast.success('Job updated successfully');
-        return navigate(`/jobs/${id}`);
-    };
+  const navigate = useNavigate();
+  const submitForm = (e) => {
+    e.preventDefault();
+    const updatedJob = {
+      id,
+      title,
+      type,
+      location,
+      description,
+      salary,
+      company: {
+        name: companyName,
+        description: companyDescription,
+        contactEmail,
+        contactPhone
+      }
+    }
+    updateJob(updatedJob);
+    toast.success('Job updated successfully');
+    return navigate(`/jobs/${id}`);
+  };
+
+  if (job === null) {
+    return <Spinner loading={loading} />
+  }
 
   return (
     <section className="bg-indigo-50">
@@ -69,7 +105,7 @@ const EditJobPage = () => {
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
-                >Job Type</label
+              >Job Type</label
               >
               <select
                 id="type"
@@ -88,7 +124,7 @@ const EditJobPage = () => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2"
-                >Job Listing Name</label
+              >Job Listing Name</label
               >
               <input
                 type="text"
@@ -105,7 +141,7 @@ const EditJobPage = () => {
               <label
                 htmlFor="description"
                 className="block text-gray-700 font-bold mb-2"
-                >Description</label
+              >Description</label
               >
               <textarea
                 id="description"
@@ -120,7 +156,7 @@ const EditJobPage = () => {
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
-                >Salary</label
+              >Salary</label
               >
               <select
                 id="salary"
@@ -154,9 +190,9 @@ const EditJobPage = () => {
                 name='location'
                 className='border rounded w-full py-2 px-3 mb-2'
                 placeholder='Company Location'
-                required    
+                required
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}       
+                onChange={(e) => setLocation(e.target.value)}
               />
             </div>
 
@@ -164,7 +200,7 @@ const EditJobPage = () => {
 
             <div className="mb-4">
               <label htmlFor="company" className="block text-gray-700 font-bold mb-2"
-                >Company Name</label
+              >Company Name</label
               >
               <input
                 type="text"
@@ -181,7 +217,7 @@ const EditJobPage = () => {
               <label
                 htmlFor="company_description"
                 className="block text-gray-700 font-bold mb-2"
-                >Company Description</label
+              >Company Description</label
               >
               <textarea
                 id="company_description"
@@ -198,7 +234,7 @@ const EditJobPage = () => {
               <label
                 htmlFor="contact_email"
                 className="block text-gray-700 font-bold mb-2"
-                >Contact Email</label
+              >Contact Email</label
               >
               <input
                 type="email"
@@ -215,7 +251,7 @@ const EditJobPage = () => {
               <label
                 htmlFor="contact_phone"
                 className="block text-gray-700 font-bold mb-2"
-                >Contact Phone</label
+              >Contact Phone</label
               >
               <input
                 type="tel"

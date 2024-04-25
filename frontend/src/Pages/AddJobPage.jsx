@@ -1,40 +1,53 @@
-import React from 'react'
-import {useNavigate} from 'react-router-dom';
-import {useState} from 'react';
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const AddJobPage = ({addJobSubmit}) => {
-    const [title, setTitle] = useState('');
-    const [type, setType] = useState('Full-Time');
-    const [location, setLocation] = useState('');
-    const [description, setDescription] = useState('');
-    const [salary, setSalary] = useState('Under $50K');
-    const [companyName, setCompanyName] = useState('');
-    const [companyDescription, setCompanyDescription] = useState('');
-    const [contactEmail, setContactEmail] = useState('');
-    const [contactPhone, setContactPhone] = useState('');
+const AddJobPage = () => {
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState('Full-Time');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [salary, setSalary] = useState('Under $50K');
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const submitForm = (e) => {
-        e.preventDefault();
-        const newJob= {
-            title,
-            type,
-            location,
-            description,
-            salary,
-            company: {
-                name: companyName,
-                description: companyDescription,
-                contactEmail,
-                contactPhone
-            }
-        }
-        addJobSubmit(newJob);
-        toast.success('Job added successfully');
-        return navigate('/jobs');
-    };
+
+  const addJob = async (newJob) => {
+    const res = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newJob),
+    });
+    return;
+  };
+
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    const newJob = {
+      title,
+      type,
+      location,
+      description,
+      salary,
+      company: {
+        name: companyName,
+        description: companyDescription,
+        contactEmail,
+        contactPhone
+      }
+    }
+    addJob(newJob);
+    toast.success('Job added successfully');
+    return navigate('/jobs');
+  };
 
   return (
     <section className="bg-indigo-50">
@@ -47,7 +60,7 @@ const AddJobPage = ({addJobSubmit}) => {
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
-                >Job Type</label
+              >Job Type</label
               >
               <select
                 id="type"
@@ -66,7 +79,7 @@ const AddJobPage = ({addJobSubmit}) => {
 
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2"
-                >Job Listing Name</label
+              >Job Listing Name</label
               >
               <input
                 type="text"
@@ -83,7 +96,7 @@ const AddJobPage = ({addJobSubmit}) => {
               <label
                 htmlFor="description"
                 className="block text-gray-700 font-bold mb-2"
-                >Description</label
+              >Description</label
               >
               <textarea
                 id="description"
@@ -98,7 +111,7 @@ const AddJobPage = ({addJobSubmit}) => {
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
-                >Salary</label
+              >Salary</label
               >
               <select
                 id="salary"
@@ -132,9 +145,9 @@ const AddJobPage = ({addJobSubmit}) => {
                 name='location'
                 className='border rounded w-full py-2 px-3 mb-2'
                 placeholder='Company Location'
-                required    
+                required
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}       
+                onChange={(e) => setLocation(e.target.value)}
               />
             </div>
 
@@ -142,7 +155,7 @@ const AddJobPage = ({addJobSubmit}) => {
 
             <div className="mb-4">
               <label htmlFor="company" className="block text-gray-700 font-bold mb-2"
-                >Company Name</label
+              >Company Name</label
               >
               <input
                 type="text"
@@ -159,7 +172,7 @@ const AddJobPage = ({addJobSubmit}) => {
               <label
                 htmlFor="company_description"
                 className="block text-gray-700 font-bold mb-2"
-                >Company Description</label
+              >Company Description</label
               >
               <textarea
                 id="company_description"
@@ -176,7 +189,7 @@ const AddJobPage = ({addJobSubmit}) => {
               <label
                 htmlFor="contact_email"
                 className="block text-gray-700 font-bold mb-2"
-                >Contact Email</label
+              >Contact Email</label
               >
               <input
                 type="email"
@@ -193,7 +206,7 @@ const AddJobPage = ({addJobSubmit}) => {
               <label
                 htmlFor="contact_phone"
                 className="block text-gray-700 font-bold mb-2"
-                >Contact Phone</label
+              >Contact Phone</label
               >
               <input
                 type="tel"

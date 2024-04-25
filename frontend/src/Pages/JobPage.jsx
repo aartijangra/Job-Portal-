@@ -18,7 +18,7 @@ const JobPage = () => {
       const res = await fetch(import.meta.env.VITE_APP_API_URL + '/api/jobs');
       const data = await res.json();
 
-      const job = data.find(job => job.id === id);
+      const job = data.find(job => job._id === id);
       setJob(job);
       console.log(job)
 
