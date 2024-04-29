@@ -1,10 +1,10 @@
 import React from 'react'
 
 const Hero = (
-    {title = 'Become a React Dev', 
-    subtitle = 'Find the React job that fits your skill set',}) => {
+    {title = 'Unlock Your Potential', 
+    subtitle = 'Discover Tailored Opportunities Matching Your Skill Set ',}) => {
     return (
-        <div><section class="bg-indigo-700 py-20 mb-4">
+        <div><section class="bg-blue-900 py-20 mb-4">
             <div
                 class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center"
             >
